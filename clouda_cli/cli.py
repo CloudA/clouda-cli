@@ -3,7 +3,7 @@ import click
 from clouda_cli import opencrack
 from clouda_cli.models import auth
 
-LOGIN_URL = 'http://localhost:5000/v3/auth/tokens'
+REGIONS = ['ca-ns-1', 'ca-bc-1']
 
 
 @click.group()
@@ -15,10 +15,11 @@ def cli():
 @click.option('--username', prompt=True)
 @click.option('--password', prompt=True,
               hide_input=True, confirmation_prompt=True)
-def login(username, password):
+@click.option('--region', prompt=True, type=click.Choice(REGIONS))
+def login(username, password, region):
     click.secho("Passwords Match.", fg='green')
 
-    click.echo("Hi, %s. Logging you in..." % username)
+    click.echo("Hi, %s. Logging you in to %s..." % (username, region))
 
     pw_auth = auth.Auth(
         'password',
@@ -30,8 +31,10 @@ def login(username, password):
             }
         })
 
+    login_url = 'https://keystone.%s.clouda.ca:8443/v3/auth/tokens' % region
+
     login_response = opencrack.api_request(
-        LOGIN_URL, None, pw_auth.as_dict())
+        login_url, None, pw_auth.as_dict())
     token = login_response.json()['token']
 
     # login token grab
@@ -45,15 +48,15 @@ def login(username, password):
                 'totp', {"auth_code": auth_code, "token_exchange": token_id})
 
             challenge_response = opencrack.api_request(
-                LOGIN_URL, None, challenge_request.as_dict())
+                login_url, None, challenge_request.as_dict())
             if challenge_response.status_code != 201:
                 click.secho("Auth Code Invalid, retry.", fg='red')
                 continue
 
-            real_token = challenge_response.json()
+            challenge_response.json()
             real_token_id = challenge_response.headers['X-Subject-Token']
             token_valid = True
-            click.secho("yer token: %s" % real_token_id, fg='green')
+            click.secho("Token: %s" % real_token_id, fg='green')
 
     else:
-        click.echo("real token, no OTP: %s" % token_id)
+        click.secho("Token: %s" % token_id, fg='green')
