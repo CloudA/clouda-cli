@@ -53,10 +53,10 @@ def login(username, password, region):
                 click.secho("Auth Code Invalid, retry.", fg='red')
                 continue
 
-            real_token = challenge_response.json()
+            challenge_response.json()
             real_token_id = challenge_response.headers['X-Subject-Token']
             token_valid = True
-            click.secho("yer token: %s" % real_token_id, fg='green')
+            click.secho("Token: %s" % real_token_id, fg='green')
 
     else:
-        click.echo("real token, no OTP: %s" % token_id)
+        click.secho("Token: %s" % token_id, fg='green')
