@@ -53,3 +53,20 @@ def api_request(url, token_id, data=None,
         resp = requests.request(method, url, headers=headers)
 
     return resp
+
+
+class Auth(object):
+    """docstring for AuthModel"""
+    def __init__(self, method, body):
+        self.method = method
+        self.body = body
+
+    def as_dict(self):
+        return {
+            "auth": {
+                "identity": {
+                    "methods": [self.method],
+                    self.method: self.body
+                }
+            }
+        }

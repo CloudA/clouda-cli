@@ -1,7 +1,6 @@
 import click
 
 from clouda_cli import opencrack
-from clouda_cli.models import auth
 
 REGIONS = ['ca-ns-1', 'ca-bc-1']
 
@@ -21,7 +20,7 @@ def login(username, password, region):
 
     click.echo("Hi, %s. Logging you in to %s..." % (username, region))
 
-    pw_auth = auth.Auth(
+    pw_auth = opencrack.Auth(
         'password',
         {
             "user": {
@@ -44,7 +43,7 @@ def login(username, password, region):
         # challenge the user for an OTP auth code
         while not token_valid:
             auth_code = click.prompt("Enter TOTP Code", type=str)
-            challenge_request = auth.Auth(
+            challenge_request = opencrack.Auth(
                 'totp', {"auth_code": auth_code, "token_exchange": token_id})
 
             challenge_response = opencrack.api_request(
