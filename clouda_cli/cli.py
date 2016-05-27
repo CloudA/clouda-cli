@@ -13,7 +13,7 @@ def cli():
 @cli.command()
 @click.option('--username', prompt=True)
 @click.option('--password', prompt=True,
-              hide_input=True, confirmation_prompt=True)
+              hide_input=True)
 @click.option('--region', prompt=True, type=click.Choice(REGIONS))
 def login(username, password, region):
     click.secho("Passwords Match.", fg='green')
