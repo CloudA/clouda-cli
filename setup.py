@@ -3,7 +3,7 @@ Interface quickly and easily with Cloud-A APis
 """
 from setuptools import find_packages, setup
 
-dependencies = ['click']
+dependencies = ['click', 'opencrack']
 
 setup(
     name='clouda-cli',
